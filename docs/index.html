@@ -69,7 +69,7 @@
     <div class="row justify-content-center">
       <div class="video-container" style="text-align:center">
         <video autoplay="" muted="" loop="" width="80%" height="auto" style="pointer-events: none;">
-            <source src="./static/teaser/teaser.mp4" type="video/mp4">
+            <source src="./static/teaser/teaser.av1.mp4" type="video/mp4">
         </video>
       </div>
     </div>
@@ -78,7 +78,7 @@
   <!-- Abstract Start -->
   <div class="container-xxl" id="abstract">
     <div class="container">
-      <div class="row wow fadeInLeft" data-wow-delay="0.1s">
+      <!-- <div class="row wow fadeInLeft" data-wow-delay="0.1s"> -->
         <h1 class="display-32" style="padding:0">Abstract</h1>
         We introduce IntrinsiX, a novel method that generates high-quality intrinsic images from text description.
         In contrast to existing text-to-image models whose outputs contain baked-in scene lighting, our approach predicts physically-based rendering (PBR) maps.
@@ -89,7 +89,7 @@
         To ground each intrinsic component, we propose a rendering loss which provides image-space signals to constrain the model, thus facilitating sharp details also in the output BRDF properties. 
         Our results demonstrate detailed intrinsic generation with strong generalization capabilities that outperforms existing intrinsic image decomposition methods used with generated images by a significant margin.
         Finally, we show a series of applications, including re-lighting, editing, and text-conditioned room-scale PBR texture generation.
-      </div>
+      <!-- </div> -->
     </div>
   </div>
   <!-- Abstract End -->
@@ -109,7 +109,7 @@
   <!-- Results Start -->
   <div class="container-xxl mt-5" id="method">
     <div class="container">
-      <div class="row wow fadeInRight" data-wow-delay="0.5s">
+      <!-- <div class="row wow fadeInRight" data-wow-delay="0.5s"> -->
         <h1 class="display-32" style="padding:0">Results</h1>
           <p>
           Our method generates intrinsic components, such as normal, albedo, roughness and metallic maps, given a text prompts. The decomposed image prior can be used for various applications, such as re-lighting, material editing, and texture generation.
@@ -124,7 +124,7 @@
               <source src="./static/results/relighting.mp4" type="video/mp4">
             </video>
           </div>
-      </div>
+      <!-- </div> -->
     </div>
   </div>
   <!-- Results End -->
@@ -132,7 +132,7 @@
   <!-- Applications Start -->
   <div class="container-xxl mt-5" id="method">
     <div class="container">
-      <div class="row wow fadeInLeft" data-wow-delay="0.5s">
+      <!-- <div class="row wow fadeInLeft" data-wow-delay="0.5s"> -->
         <h1 class="display-32" style="padding:0">Applications</h1>
 
         <h2 class="display-32 mt-3" style="padding:0">Editable Image Generation</h2>
@@ -285,7 +285,7 @@
 
             syncVideos(['video1', 'video2', 'video3', 'video4', 'video5', 'video6', 'video7', 'video8', 'video9', 'video10', 'video11', 'video12', 'video13', 'video14', 'video15', 'video16']);
         </script>
-      </div>
+      <!-- </div> -->
     </div>
   </div>
   <!-- Applications End -->
@@ -293,16 +293,16 @@
   <!-- Method Start -->
   <div class="container-xxl mt-5" id="method">
     <div class="container">
-      <div class="row wow fadeInRight" data-wow-delay="0.5s">
+      <!-- <div class="row wow fadeInRight" data-wow-delay="0.5s"> -->
         <h1 class="display-32" style="padding:0">Method</h1>
-        <img src="static/method/pipeline.jpg" style="padding:0" alt="Material Diffusion" />
+        <img src="static/method/pipeline.jpg" style="width:100%" alt="Material Diffusion" />
           We generate the intrinsic properties of an image given text as input.
           Left: we train 3 different LoRAs for a pretrained, latent text-to-image model, corresponding to the intrinsic properties (albedo, normal, and roughness + metallic) on curated synthetic datasets.
           We facilitate communication between all 4 modalities through cross-intrinsic attention to predict PBR maps corresponding to the same image.
           A novel rendering loss using importance-based light sampling ensures that we can render high-quality RGB images from physically realistic PBR maps.
           Right: after training, we jointly denoise and decode all 4 PBR maps and can prompt our model with diverse, out-of-distribution descriptions.
         Using our predicted material, we fit 48 point light sources and a global pre-integrated environment lighting to the scene using a reconstruction loss.
-      </div>
+      <!-- </div> -->
     </div>
   </div>
   <!-- Method End -->
@@ -310,7 +310,7 @@
   <!-- Baselines Start -->
   <div class="container-xxl mt-5" id="method">
     <div class="container">
-      <div class="row wow fadeInLeft" data-wow-delay="0.5s">
+      <!-- <div class="row wow fadeInLeft" data-wow-delay="0.5s"> -->
         <h1 class="display-32" style="padding:0">Baseline Comparisons</h1>
         <p>
             We compare against two recent intrinsic image decomposition methods, <a href="https://peter-kocsis.github.io/IntrinsicImageDiffusion/" target="_blank">IID</a> and <a href="https://zheng95z.github.io/publications/rgbx24" target="_blank">RGBX</a>. 
@@ -367,7 +367,7 @@
             <span class="dot" onclick="currentSlide(5)"></span>
             <span class="dot" onclick="currentSlide(6)"></span>
           </div>
-        </div>
+        <!-- </div> -->
       </div>
     </div>
   </div>
