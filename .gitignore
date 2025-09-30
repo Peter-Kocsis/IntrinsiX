@@ -1,0 +1,12 @@
+# VSCode
+.vscode
+
+# PyCharm
+.idea
+
+# Models
+models
+
+# Python
+**/__pycache__
+**/.ipynb_checkpoints/

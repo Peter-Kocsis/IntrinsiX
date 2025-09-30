@@ -1,0 +1,26 @@
+name: intrinsix
+channels:
+  - anaconda
+  - pytorch
+  - conda-forge
+  - nvidia
+  - defaults
+dependencies:
+  - pip=23.3.1
+  - python=3.9
+  - pip:
+    # Diffusers
+    - git+https://github.com/huggingface/diffusers.git@33fafe3d143ca8380a9e405e7acfa69091d863fb
+    - sentencepiece==0.2.0
+    - transformers==4.45.1
+    - accelerate==0.34.2
+    - protobuf==4.25.5
+    # Torch
+    - torchvision==0.23.0
+    # Helpers
+    - einops==0.8.1
+    # IO
+    - opencv-python==4.8.1.78
+    # Demo
+    - gradio==4.44.1
+    - pydantic==2.10.6
