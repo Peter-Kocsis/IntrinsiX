@@ -15,9 +15,7 @@
 
 <p align="center">
   <a href="">
-    <video autoplay="" muted="" loop="" width="80%" height="auto" style="pointer-events: none;">
-            <source src="./docs/static/teaser/teaser.av1.mp4" type="video/mp4">
-        </video>
+    <img src="./docs/static/teaser/teaser.jpg" alt="Logo" width="95%">
   </a>
 </p>
 
