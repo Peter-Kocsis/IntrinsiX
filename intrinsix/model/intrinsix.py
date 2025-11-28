@@ -35,58 +35,60 @@ class IntrinsiXPipeline(FluxPipeline):
         pipe = IntrinsiXPipeline.from_pipe(pipe)
 
         # Inject the LoRA modules
-        features = [
-            "albedo",
-            "material",
-            "normal"
-        ]
+        if pretrained_model_name_or_path is not None:
+            features = [
+                "albedo",
+                "material",
+                "normal"
+            ]
 
-        lora_configs = list()
-        for feature in features:
-            if feature == "albedo":
-                lora_configs.append({
-                                    "r": 64,
-                                    "dropout_p": 0.0,
-                                    "scale": 1.0
-                                })
-            elif feature == "material":
-                lora_configs.append({
-                                    "r": 64,
-                                    "dropout_p": 0.0,
-                                    "scale": 1.0
-                                })
-            elif feature == "normal":
-                lora_configs.append({
-                                    "r": 64,
-                                    "dropout_p": 0.0,
-                                    "scale": 1.0
-                                })
-            elif feature == "shading":
-                lora_configs.append({
-                                    "r": 64,
-                                    "dropout_p": 0.0,
-                                    "scale": 1.0
-                                })
-            elif feature == "im":
-                lora_configs.append(None)
-        inject_trainable_batched_lora(model=pipe.transformer,
-                                      target_modules={"to_k", "to_q", "to_v", "to_out.0"},
-                                      lora_configs=lora_configs,
-                                      verbose=True)
-        
-        # Load the LoRA weights
-        cache_dir = kwargs.pop("cache_dir", None)
-        lora_path = snapshot_download(repo_id=pretrained_model_name_or_path, cache_dir=cache_dir)
-        lora_state_dict = cls.lora_state_dict(lora_path)
-        loras_state_dict = {
-                        f'{k.replace("transformer.", "")}': v
-                        for k, v in lora_state_dict.items() if k.startswith("transformer.")
-                    }
-        pipe.transformer.load_state_dict(loras_state_dict, strict=False)
+            lora_configs = list()
+            for feature in features:
+                if feature == "albedo":
+                    lora_configs.append({
+                                        "r": 64,
+                                        "dropout_p": 0.0,
+                                        "scale": 1.0
+                                    })
+                elif feature == "material":
+                    lora_configs.append({
+                                        "r": 64,
+                                        "dropout_p": 0.0,
+                                        "scale": 1.0
+                                    })
+                elif feature == "normal":
+                    lora_configs.append({
+                                        "r": 64,
+                                        "dropout_p": 0.0,
+                                        "scale": 1.0
+                                    })
+                elif feature == "shading":
+                    lora_configs.append({
+                                        "r": 64,
+                                        "dropout_p": 0.0,
+                                        "scale": 1.0
+                                    })
+                elif feature == "im":
+                    lora_configs.append(None)
+            inject_trainable_batched_lora(model=pipe.transformer,
+                                        target_modules={"to_k", "to_q", "to_v", "to_out.0"},
+                                        lora_configs=lora_configs,
+                                        verbose=True)
+            
+            # Load the LoRA weights
+            if pretrained_model_name_or_path != base_model_path:
+                cache_dir = kwargs.pop("cache_dir", None)
+                lora_path = snapshot_download(repo_id=pretrained_model_name_or_path, cache_dir=cache_dir)
+                lora_state_dict = cls.lora_state_dict(lora_path)
+                loras_state_dict = {
+                                f'{k.replace("transformer.", "")}': v
+                                for k, v in lora_state_dict.items() if k.startswith("transformer.")
+                            }
+                pipe.transformer.load_state_dict(loras_state_dict, strict=False)
 
-        # Set Cross-Intrinsic-Attention
-        crossattn_processor = CrossIntrinsicAttnProcessor2_0()
-        pipe.transformer.set_attn_processor(crossattn_processor)
+            # Set Cross-Intrinsic-Attention
+            crossattn_processor = CrossIntrinsicAttnProcessor2_0()
+            pipe.transformer.set_attn_processor(crossattn_processor)
 
         return pipe
 

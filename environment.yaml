@@ -24,3 +24,5 @@ dependencies:
     # Demo
     - gradio==4.44.1
     - pydantic==2.10.6
+    # Training
+    - batch-dev==0.0.4

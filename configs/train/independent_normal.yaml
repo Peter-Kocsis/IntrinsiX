@@ -1,0 +1,86 @@
+# To run this setting: accelerate launch intrinsix/train_independent.py experiment=independent_normal.yaml
+
+project_name: intrinsix
+exp_name: independent_normal
+
+# Paths
+dataset_path: data/InteriorVerseSmall/dataset
+model_cache_dir: models
+pretrained_model_name_or_path: black-forest-labs/FLUX.1-dev
+output_dir: outputs
+
+# MODEL
+revision: null
+variant: null
+weighting_scheme: "none"
+logit_mean: 0.0
+logit_std: 1.0
+mode_scale: 1.29
+
+rank: 64  # LoRA rank
+
+# DATASET
+features_to_cat: 
+  - normal
+instance_prompt: null
+caption_prefix: "" 
+train_batch_size: 1
+sample_batch_size: 4
+repeats: 1
+max_sequence_length: 512
+resolution: 512
+dataloader_num_workers: 0
+
+# VALIDATION
+validation_prompt:
+  - livingroom
+  - Taj Mahal
+num_validation_images: 1
+validation_epochs: 1
+validation_steps: 100
+
+# TRAINING
+seed: 0
+gradient_accumulation_steps: 10
+gradient_checkpointing: False
+prior_loss_weight: 1.0
+num_class_images: 100
+train_text_encoder: False
+num_train_epochs: 200
+max_train_steps: 2000
+checkpointing_steps: 500
+checkpoints_total_limit: null
+resume_from_checkpoint: null
+
+# OPTIMIZER
+max_grad_norm: 1.0
+optimizer: "prodigy"
+learning_rate: 1
+guidance_scale: 1
+text_encoder_lr: 5e-6
+scale_lr: False
+lr_scheduler: "constant"
+lr_warmup_steps: 0
+lr_num_cycles: 1
+lr_power: 1.0
+use_8bit_adam: False
+adam_beta1: 0.9
+adam_beta2: 0.999
+prodigy_beta3: null
+prodigy_decouple: True
+adam_weight_decay: 1e-04
+adam_weight_decay_text_encoder: 1e-03
+adam_epsilon: 1e-08
+prodigy_use_bias_correction: True
+prodigy_safeguard_warmup: True
+
+# LOGGING
+report_to: "wandb"
+logging_dir: "logs"
+
+# ENVIRONMENT
+local_rank: -1
+allow_tf32: True
+
+mixed_precision: bf16
+upcast_before_saving: False

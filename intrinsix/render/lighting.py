@@ -141,6 +141,124 @@ class DirectionalLight_LatLong(nn.Module):
     @property
     def spp(self):
         return 1
+    
+class DirectionalLight(nn.Module):
+    def __init__(self,
+                 ch=1,
+                 solid_angle=5,
+                 weight_init=0):
+        super().__init__()
+
+        self.Num = 1
+
+        self.ch = ch
+        self.solid_angle = np.cos(np.deg2rad(solid_angle))
+
+        self.init_pos(weight_init=weight_init)
+
+        is_enabled = torch.tensor(True)
+        self.register_buffer('is_enabled', is_enabled)
+
+    def init_pos(self, weight_init=0):
+        # weight = nn.Parameter(-torch.ones((1, self.ch), dtype=torch.float32) + weight_init)
+        # direction = nn.Parameter(torch.tensor(((0, 0, -1),), dtype=torch.float32))
+        weight = -torch.ones((1, self.ch), dtype=torch.float32) + weight_init
+        direction = torch.tensor(((0, 0, -1),), dtype=torch.float32)
+
+        self.register_buffer('weight', weight)
+        self.register_buffer('direction', direction)
+
+        return weight, direction
+
+    def deparameterize(self):
+        direction = self.direction
+
+        weight = self.deparameterize_weight()
+
+        return weight, direction
+
+    def deparameterize_weight(self):
+        weight = torch.exp(self.weight)
+        return weight
+
+    def get_axis(self, direction):
+        # Get axis
+        direction = torch.nn.functional.normalize(direction, dim=1)
+
+        return direction
+
+    def get_axis_from_angle(self, theta, phi):
+        # Get axis
+        axisX = torch.sin(theta) * torch.sin(phi)
+        axisY = torch.cos(theta)
+        axisZ = -torch.sin(theta) * torch.cos(phi)
+
+        axis = torch.cat([axisX, axisY, axisZ], dim=1)
+
+        return axis
+
+
+    def forward(self, direction):
+        if self.is_enabled:
+            weight, direction = self.deparameterize()
+            axis = self.get_axis(direction)
+
+            if direction.ndim == 2:
+                cos_angle = einsum(direction, axis, 'b c, sg c -> b sg')
+                cos_angle = rearrange(cos_angle, 'b sg -> b sg 1')
+                weight = rearrange(weight, 'sg c -> 1 sg c')
+                weight = weight * (cos_angle > self.solid_angle).to(weight.dtype)
+                val = torch.sum(weight, dim=1)
+            elif direction.ndim == 3:
+                cos_angle = einsum(direction, axis, 'sg b c, sg c -> b sg')
+                cos_angle = rearrange(cos_angle, 'b sg -> b sg 1')
+                weight = rearrange(weight, 'sg c -> 1 sg c')
+                weight = weight * (cos_angle > self.solid_angle).to(weight.dtype)
+                val = weight
+                val = rearrange(val, 'b sg c -> sg b c')
+            else:
+                raise NotImplementedError()
+        else:
+            val = torch.zeros_like(direction)
+        return val
+
+    def reg_loss(self):
+        if self.is_enabled:
+            val = self.deparameterize_weight()
+            val = torch.sum(val)
+
+            return val
+        else:
+            return torch.tensor(0, device=self.weight.device, dtype=torch.float32)
+
+    @torch.no_grad()
+    def to_envmap(self, size=(256, 512)):
+        envHeight, envWidth = size
+
+        phi = np.linspace(-np.pi, np.pi, envWidth)
+        theta = np.linspace(0, np.pi, envHeight)
+        phi, theta = np.meshgrid(phi, theta)
+
+        phi = torch.from_numpy(phi)[None, None]
+        theta = torch.from_numpy(theta)[None, None]
+
+        directions = self.get_axis_from_angle(theta, phi)
+
+        directions = einops.rearrange(directions, 'b c h w -> (b h w) c').to(torch.float32).to(self.theta.device)
+        envmap = self.forward(directions)
+        envmap = einops.rearrange(envmap, '(b h w) c -> b c h w', h=envHeight, w=envWidth)
+        return envmap
+
+    def sample_direction(self, vpos, normal):
+        # (bn, spp, 3, h, w)
+        weight, direction = self.deparameterize()
+        axis = self.get_axis(direction)
+        return axis[None, :, :, None, None]
+        # return axis[None, :, :, None, None].expand_as(normal)
+
+    @property
+    def spp(self):
+        return 1
 
 class GlobalIncidentLighting(nn.Module):
     def __init__(self,

@@ -7,6 +7,12 @@
 # Models
 models
 
+# Datasets
+data
+
+# Trainin outputs
+outputs
+
 # Python
 **/__pycache__
 **/.ipynb_checkpoints/

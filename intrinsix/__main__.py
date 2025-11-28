@@ -19,7 +19,7 @@ from huggingface_hub import hf_hub_download
 from .render.lighting import DirectionalLight_LatLong, GlobalIncidentLighting
 from .render.render import IIR_RenderLayer
 
-from .intrinsix import IntrinsiXPipeline
+from .model.intrinsix import IntrinsiXPipeline
 
 @torch.no_grad()
 def run_intrinsix(pipe, prompt, seed=0, **kwargs):
