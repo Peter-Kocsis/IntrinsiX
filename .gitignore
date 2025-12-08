@@ -5,13 +5,13 @@
 .idea
 
 # Models
-models
+/models
 
 # Datasets
-data
+/data
 
 # Trainin outputs
-outputs
+/outputs
 
 # Python
 **/__pycache__
