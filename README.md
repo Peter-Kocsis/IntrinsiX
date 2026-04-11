@@ -43,7 +43,7 @@ Our project has the following structure:
 # Installation
 To install the dependencies, you can use the provided environment file:
 ```
-conda create -f environment.yaml
+conda env create -f environment.yaml
 conda activate intrinsix
 ```
 
